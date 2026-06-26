@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: book_embeddings
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${postgresql-url}
+    username: ${postgresql-username}
+    password: ${postgresql-password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  ai:
+    openai:
+      base-url: ${openai-url}
+      api-key: ${openai-api-key}
+      embedding:
+        model: bge-m3
+    vectorstore:
+      pgvector:
+        table-name: vector_store
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024 # bge-m3 모델 차원 수
+        initialize-schema: true
+
+  rabbitmq:
+    host: ${rabbitmq-host}      # 로컬 Docker
+    port: ${rabbitmq-port}           # AMQP 포트
+    username: ${rabbitmq-username}
+    password: ${rabbitmq-password}
+    # 운영 서버로 바꿀 때는 host만 변경
+    # host: 실제서버IP 또는 AWS MQ 주소
+
+    listener:
+      simple:
+        acknowledge-mode: manual   # manual ACK (권장)
+        prefetch: 10               # Consumer당 최대 처리 수
+
+embedding:
+  batch:
+    enabled: true           # false로 바꾸면 스케줄러 비활성화
+    page-size: 500           # 한 번의 배치 실행에서 처리할 도서 수
+    chunk-size: 16          # 임베딩 배치 호출 1회당 텍스트 수 (BookBatchServiceImpl.CHUNK_SIZE와 일치)
+    fixed-delay-ms: 180000  # 이전 배치 완료 후 다음 배치까지 대기 시간 (ms) - 기본 3분 - 변형 1초
+    initial-delay-ms: 5000  # 앱 시작 후 첫 배치까지 대기 시간 (ms) - 기본 5초
