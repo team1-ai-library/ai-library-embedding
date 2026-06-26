@@ -1,7 +1,7 @@
 package com.nhnacadmey.book_embeddings.service;
 
 import com.nhnacadmey.book_embeddings.dto.BookDto;
-import com.nhnacadmey.book_embeddings.dto.Reviewdto;
+import com.nhnacadmey.book_embeddings.dto.ReviewDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -76,9 +76,9 @@ class BookBatchServiceTest {
         bookBatchService.processAndSaveEmbeddings(bookDtos);
 
         // When: 이 책들에 대해 리뷰를 생성하고 임베딩을 업데이트
-        List<Reviewdto> reviewDtos = new ArrayList<>();
-        reviewDtos.add(new Reviewdto(bookDtos.get(0), "이 책은 정말 재미있습니다. 추천합니다."));
-        reviewDtos.add(new Reviewdto(bookDtos.get(1), "내용이 너무 어려워서 이해하기 힘드네요."));
+        List<ReviewDto> reviewDtos = new ArrayList<>();
+        reviewDtos.add(new ReviewDto(bookDtos.get(0), "이 책은 정말 재미있습니다. 추천합니다."));
+        reviewDtos.add(new ReviewDto(bookDtos.get(1), "내용이 너무 어려워서 이해하기 힘드네요."));
 
         bookBatchService.BookReviewAndUpdateEmbeddings(reviewDtos);
 

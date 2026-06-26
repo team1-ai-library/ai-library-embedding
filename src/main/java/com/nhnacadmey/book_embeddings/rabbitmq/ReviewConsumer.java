@@ -1,6 +1,6 @@
 package com.nhnacadmey.book_embeddings.rabbitmq;
 
-import com.nhnacadmey.book_embeddings.dto.Reviewdto;
+import com.nhnacadmey.book_embeddings.dto.ReviewDto;
 import com.nhnacadmey.book_embeddings.service.BookBatchService;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,9 @@ public class ReviewConsumer {
 
     private final BookBatchService bookBatchService;
 
-    @RabbitListener(queues = "review.embedding")
+    @RabbitListener(queues = "library.team1.review.embedding")
     public void processPayment(
-            Reviewdto reviewdto,
+            ReviewDto reviewdto,
             Channel channel,
             @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag
     ) throws Exception {
@@ -38,7 +38,7 @@ public class ReviewConsumer {
         }
     }
 
-    private void processPaymentLogic(Reviewdto reviewdto) {
+    private void processPaymentLogic(ReviewDto reviewdto) {
         bookBatchService.BookReviewAndUpdateEmbeddings(List.of(reviewdto));
     }
 }

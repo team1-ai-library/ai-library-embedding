@@ -1,7 +1,7 @@
 package com.nhnacadmey.book_embeddings.service.impl;
 
 import com.nhnacadmey.book_embeddings.dto.BookDto;
-import com.nhnacadmey.book_embeddings.dto.Reviewdto;
+import com.nhnacadmey.book_embeddings.dto.ReviewDto;
 import com.nhnacadmey.book_embeddings.service.BookBatchService;
 import com.nhnacadmey.book_embeddings.util.TextPreprocessor;
 import lombok.RequiredArgsConstructor;
@@ -107,14 +107,14 @@ public class BookBatchServiceImpl implements BookBatchService {
 
     @Override
     @Transactional
-    public void BookReviewAndUpdateEmbeddings(List<Reviewdto> reviewDtos) {
+    public void BookReviewAndUpdateEmbeddings(List<ReviewDto> reviewDtos) {
         String sql = "UPDATE book_embeddings SET embedding = ? WHERE book_id = ?";
 
         int total = reviewDtos.size();
         int processed = 0;
 
         for (int i = 0; i < total; i += CHUNK_SIZE) {
-            List<Reviewdto> chunk = reviewDtos.subList(i, Math.min(i + CHUNK_SIZE, total));
+            List<ReviewDto> chunk = reviewDtos.subList(i, Math.min(i + CHUNK_SIZE, total));
 
             long embedStart = System.currentTimeMillis();
             List<float[]> vectors = embedAllForBookReview(chunk);
@@ -131,7 +131,7 @@ public class BookBatchServiceImpl implements BookBatchService {
         }
     }
 
-    private void executeBatchUpdate(List<Reviewdto> chunk, List<float[]> vectors, String sql) {
+    private void executeBatchUpdate(List<ReviewDto> chunk, List<float[]> vectors, String sql) {
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -153,14 +153,14 @@ public class BookBatchServiceImpl implements BookBatchService {
         });
     }
 
-    private List<float[]> embedAllForBookReview(List<Reviewdto> chunk) {
+    private List<float[]> embedAllForBookReview(List<ReviewDto> chunk) {
         List<String> texts = chunk.stream()
                 .map(this::buildEmbedText)
                 .toList();
         return embeddingModel.embed(texts);
     }
 
-    private String buildEmbedText(Reviewdto dto) {
+    private String buildEmbedText(ReviewDto dto) {
         StringBuilder sb = new StringBuilder();
 
         if (StringUtils.hasText(dto.bookDto().title())) {
