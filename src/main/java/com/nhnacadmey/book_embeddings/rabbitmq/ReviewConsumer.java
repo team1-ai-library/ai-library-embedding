@@ -28,7 +28,7 @@ public class ReviewConsumer {
     ) throws Exception {
 
         try {
-            processPaymentLogic(reviewdto);
+            processReviewEmbedding(reviewdto);
 
             channel.basicAck(deliveryTag, false);
 
@@ -38,7 +38,7 @@ public class ReviewConsumer {
         }
     }
 
-    private void processPaymentLogic(ReviewDto reviewdto) {
+    private void processReviewEmbedding(ReviewDto reviewdto) {
         bookBatchService.BookReviewAndUpdateEmbeddings(List.of(reviewdto));
     }
 }

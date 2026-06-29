@@ -83,8 +83,7 @@ public class EmbeddingScheduler {
                 book.getIsbn(),
                 book.getTitle(),
                 book.getAuthorName(),
-                book.getBookContent(),
-                book.getSubtitle() != null ? book.getSubtitle() : ""
+                book.getBookContent()
         );
     }
 }

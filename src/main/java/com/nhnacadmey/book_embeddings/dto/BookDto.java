@@ -5,7 +5,6 @@ public record BookDto(
         String isbn,
         String title,
         String authorName,
-        String bookContent,
-        String description
+        String bookContent
 ) {
 }
